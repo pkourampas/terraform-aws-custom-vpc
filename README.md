@@ -1,11 +1,3 @@
-AWS Custom VPC components:
+Table of Contents
 
-- VPC CIDR
-- Internet Gateway (Associate the Internet Gateway with VPC)
-- Route Table (Associate the Route Table with Internet Gateway)
-- Public Subnet (Associate the public subnet with Internet Gateway Route)
-- Private Subnet
-- 
-
-Resources
-
+# Introduction
