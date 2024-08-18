@@ -1,0 +1,50 @@
+name: "Provision a Custom VPC on AWS using Terraform"
+run-name: ${{ github.actor }}
+
+# It triggers on push events
+on:
+  push:
+    branches:
+      - '!main'
+
+jobs:
+  Create_a_custom_VPC_on_AWS:
+    runs-on: ubuntu-latest
+
+    # Define Environmental Variable
+    env:
+      TF_Region: "Virginia"
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      # Installs the selected version of Terraform    
+      - name: Install Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: '1.7.3'
+
+      # Add your aws cli credentials as secrets into the repository
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ }}
+          aws-secret-access-key: ${{ }}
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Format
+        run: terraform fmt
+
+      - name: Terraform Validate
+        run: terraform validate
+
+      - name: Terraform Plan
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        run: terraform plan -var 'region=${{ env.TF_Region }}'
+          
+      - name: Terraform Apply
+        if: success()
+        run: terraform apply -var 'region=${{ env.TF_Region }}'
