@@ -1,0 +1,56 @@
+name: "Provision a Custom VPC on AWS using Terraform"
+run-name: ${{ github.actor }}
+
+# It triggers on push events
+on:
+  push:
+    paths-ignore:
+      - './github/workflows/**'
+    branches:
+      - 'main'
+
+jobs:
+  Create_a_custom_VPC_on_AWS:
+    permissions:
+      id-token: write       # This is required for requesting the JWT (JSON web Token)
+      contents: read        # This is required for actions/checkout
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      # Installs the selected version of Terraform    
+      - name: Install Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: '1.7.3'
+
+      # Add your aws cli credentials as secrets into the repository
+      - name: Get AWS permissions
+        uses: aws-actions/configure-aws-credentials@v2
+        with: 
+          role-to-assume: arn:aws:iam::547145222576:role/test_aws_role_gh
+          aws-region: "ca-central-1"
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Format
+        run: terraform fmt
+
+      - name: Terraform Validate
+        run: terraform validate
+
+      - name: Terraform Plan
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        run: terraform plan -var 'region=${{ env.TF_region }}'
+        env:
+          TF_region: "Canada"
+          
+      - name: Terraform Apply
+        if: success()
+        run: terraform apply -var 'region=${{ env.TF_region }}' -auto-approve 
+        env:
+          TF_region: "Canada"
+

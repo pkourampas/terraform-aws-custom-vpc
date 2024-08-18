@@ -1,11 +1,13 @@
-AWS Custom VPC components:
+Table of Contents
 
-- VPC CIDR
-- Internet Gateway (Associate the Internet Gateway with VPC)
-- Route Table (Associate the Route Table with Internet Gateway)
-- Public Subnet (Associate the public subnet with Internet Gateway Route)
-- Private Subnet
-- 
+- [Introduction](#introduction)
 
-Resources
+<br>
 
+# Introduction
+
+This repo is a POC (Proof of Concept) of how to create a Custom VPC on AWS. Utilizing Terraform, OIDC for authentication and Github actions for CI/CD.
+
+<br>
+
+![Custom VPC](/images/Custom%20VPC.png)
