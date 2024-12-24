@@ -31,5 +31,5 @@ variable "aws_vpc_cidr" {
 }
 
 variable "number_of_private_subnets" {
-  default = 2
+  default = 1
 }
