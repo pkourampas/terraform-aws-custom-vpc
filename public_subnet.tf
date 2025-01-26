@@ -41,7 +41,8 @@ resource "aws_route_table_association" "public_route_table_associate" {
 }
 
 # ----- Create an Elastic IP for the NAT Gateway ----- 
-
+/* In this section we will create the NAT Gateway which will be live in the Public Subnet.
+It will provide access from the private subnets to the internet.*/
 
 resource "aws_eip" "nat_gateway_eip" {
   domain = "vpc"
