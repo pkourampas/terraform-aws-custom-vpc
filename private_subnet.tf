@@ -24,6 +24,8 @@ resource "aws_route_table" "private" {
 
 # ----- Associate the Private Subnet with Route Table -----
 resource "aws_route_table_association" "private_route_table_associate" {
-  subnet_id = aws_subnet.private.id
+  count = var.number_of_private_subnets
+
+  subnet_id = aws_subnet.private[count.index].id
   route_table_id = aws_route_table.private.id
 }
