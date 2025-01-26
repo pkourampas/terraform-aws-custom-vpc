@@ -40,7 +40,10 @@ resource "aws_route_table_association" "public_route_table_associate" {
   route_table_id = aws_route_table.public.id
 }
 
-# ----- Create an Elastic IP for the NAT Gateway -----
+# ----- Create an Elastic IP for the NAT Gateway ----- 
+/* In this section we will create the NAT Gateway which will be live in the Public Subnet.
+It will provide access from the private subnets to the internet.*/
+
 resource "aws_eip" "nat_gateway_eip" {
   domain = "vpc"
 }
@@ -49,4 +52,9 @@ resource "aws_eip" "nat_gateway_eip" {
 resource "aws_nat_gateway" "nat_gw" {
   allocation_id = aws_eip.nat_gateway_eip.id 
   subnet_id = aws_subnet.public[count.index].id
+
+  depends_on = [ 
+    aws_internet_gateway.igw
+   ]
+
 }

@@ -20,7 +20,7 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v3
 
-      # Installs the selected version of Terraform    
+      # Installs the selected version of Terraform
       - name: Install Terraform
         uses: hashicorp/setup-terraform@v2
         with:
@@ -29,7 +29,7 @@ jobs:
       # Add your aws cli credentials as secrets into the repository
       - name: Get AWS permissions
         uses: aws-actions/configure-aws-credentials@v2
-        with: 
+        with:
           role-to-assume: arn:aws:iam::547145222576:role/test_aws_role_gh
           aws-region: "ca-central-1"
 
@@ -47,10 +47,10 @@ jobs:
         run: terraform plan -var 'region=${{ env.TF_region }}'
         env:
           TF_region: "Canada"
-          
+
       - name: Terraform Apply
         if: success()
-        run: terraform apply -var 'region=${{ env.TF_region }}' -auto-approve 
+        run: terraform apply -var 'region=${{ env.TF_region }}' -auto-approve
         env:
           TF_region: "Canada"
 
