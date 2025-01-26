@@ -13,7 +13,7 @@ env:
   AWS_ROLE_ASSIGNMENT: "aws_vpc_role"
   AWS_REGION_ID: "ca-central-1"
   AWS_REGION_NAME: "Canada"
-  
+  AWS_OWNER_ID: ${{ secrets.AWS_OWNER_ID }}
 
 jobs:
   Create_a_custom_VPC_on_AWS:
@@ -36,7 +36,7 @@ jobs:
       - name: Get AWS permissions
         uses: aws-actions/configure-aws-credentials@v2
         with:
-          role-to-assume: arn:aws:iam::547145222576:role/${{ env.AWS_ROLE_ASSIGNMENT }}
+          role-to-assume: arn:aws:iam::${{ env.AWS_OWNER_ID }}:role/${{ env.AWS_ROLE_ASSIGNMENT }}
           aws-region: ${{ env.AWS_REGION_ID }}
 
       - name: Terraform Init
