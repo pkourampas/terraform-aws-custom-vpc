@@ -9,6 +9,12 @@ on:
     branches:
       - 'main'
 
+env:
+  AWS_ROLE_ASSIGNMENT: "aws_vpc_role"
+  AWS_REGION_ID: "ca-central-1"
+  AWS_REGION_NAME: "Canada"
+  
+
 jobs:
   Create_a_custom_VPC_on_AWS:
     permissions:
@@ -30,8 +36,8 @@ jobs:
       - name: Get AWS permissions
         uses: aws-actions/configure-aws-credentials@v2
         with:
-          role-to-assume: arn:aws:iam::547145222576:role/test_aws_role_gh
-          aws-region: "ca-central-1"
+          role-to-assume: arn:aws:iam::547145222576:role/${{ env.AWS_ROLE_ASSIGNMENT }}
+          aws-region: ${{ env.AWS_REGION_ID }}
 
       - name: Terraform Init
         run: terraform init
@@ -46,11 +52,11 @@ jobs:
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         run: terraform plan -var 'region=${{ env.TF_region }}'
         env:
-          TF_region: "Canada"
+          TF_region: ${{ env.AWS_REGION_NAME }}
 
       - name: Terraform Apply
         if: success()
         run: terraform apply -var 'region=${{ env.TF_region }}' -auto-approve
         env:
-          TF_region: "Canada"
+          TF_region: ${{ env.AWS_REGION_NAME }}
 
