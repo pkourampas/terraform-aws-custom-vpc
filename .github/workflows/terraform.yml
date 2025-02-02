@@ -10,10 +10,11 @@ on:
       - 'main'
 
 env:
-  AWS_ROLE_ASSIGNMENT: "aws_vpc_role"
-  AWS_REGION_ID: "ca-central-1"
+  AWS_ROLE_ASSIGNMENT: ${{ secrets.AWS_ROLE_ASSIGNMENT }}
+  AWS_REGION_ID: ""
   AWS_REGION_NAME: "Canada"
   AWS_OWNER_ID: ${{ secrets.AWS_OWNER_ID }}
+  REGION_MAP: '{"Virginia":"us-east-1", "Ohio":"us-east-2", "California":"us-west-1", "Oregon":"us-west-2", "Mumbai":"ap-south-1", "Osaka":"ap-northeast-3", "Seoul":"ap-northeast-2", "Singapore":"ap-shoutheast-1", "Sydney":"ap-southeast-2", "Tokyo":"ap-northeast-1", "Canada":"ca-central-1", "Frankfurt":"eu-central-1", "Ireland":"eu-west-1", "London":"eu-west-2", "Paris":"eu-west-3", "Stockholm":"eu-north-1", "Sao Paulo":"sa-east-1"}'
 
 jobs:
   Create_a_custom_VPC_on_AWS:
@@ -23,6 +24,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Get Region
+        run: |
+          AWS_REGION_ID=$(echo "$REGION_MAP" | jq -r --arg key "$AWS_REGION_NAME" '.[$key]')
+          echo "AWS_REGION_ID=$AWS_REGION_ID"
+
       - name: Checkout repo
         uses: actions/checkout@v3
 
@@ -50,13 +56,10 @@ jobs:
 
       - name: Terraform Plan
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-        run: terraform plan -var 'region=${{ env.TF_region }}'
-        env:
-          TF_region: ${{ env.AWS_REGION_NAME }}
+        run: terraform plan -var 'region=${{ env.AWS_REGION_NAME }}'
 
       - name: Terraform Apply
         if: success()
-        run: terraform apply -var 'region=${{ env.TF_region }}' -auto-approve
-        env:
-          TF_region: ${{ env.AWS_REGION_NAME }}
+        run: terraform apply -var 'region=${{ env.AWS_REGION_NAME }}' -auto-approve
+
 
