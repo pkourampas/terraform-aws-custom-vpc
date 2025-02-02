@@ -27,5 +27,3 @@ For this workshop, we will use the **AmazonVPCFullAccess** policy to manage VPC 
 To assign an Elastic IP (EIP) to a NAT Gateway, you must create a custom IAM policy with the necessary permissions. This policy ensures that the required actions can be performed securely and effectively.
 
 [EIP Policy](/references/EIP_Policy.txt)
-
-# Trigger workflow

@@ -63,6 +63,4 @@ jobs:
 
       - name: Terraform Apply
         if: success()
-        run: terraform apply -var 'region=${{ env.TF_region }}' -auto-approve ${{ env.PLAN_OUT }}
-        env:
-          TF_region: ${{ env.AWS_REGION_NAME }}
+        run: terraform apply -auto-approve ${{ env.PLAN_OUT }}
