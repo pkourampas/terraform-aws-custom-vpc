@@ -20,6 +20,10 @@ resource "aws_route_table" "private" {
     cidr_block = "0.0.0.0/0"
     nat_gateway_id = aws_nat_gateway.nat_gw[0].id
   }
+
+  tags = {
+    Name = "private_route_table"
+  }
 }
 
 # ----- Associate the Private Subnet with Route Table -----
