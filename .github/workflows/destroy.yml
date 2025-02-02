@@ -1,0 +1,6 @@
+name: Destroy the resources in the Custom VPC
+
+on:
+  workflow_dispatch:
+
+jobs:
