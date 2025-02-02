@@ -27,6 +27,7 @@ jobs:
       - name: Get Region
         run: |
           AWS_REGION_ID=$(echo "$REGION_MAP" | jq -r --arg key "$AWS_REGION_NAME" '.[$key]')
+          echo "AWS_REGION_ID=$AWS_REGION_ID" >> $GITHUB_ENV
 
       - name: Checkout repo
         uses: actions/checkout@v3
