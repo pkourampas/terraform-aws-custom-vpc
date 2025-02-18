@@ -33,3 +33,39 @@ resource "aws_internet_gateway" "igw" {
     Name = "main-igw"
   }
 }
+
+/* 
+We are using the aws_ami data source to filter the latest amazon linux machine Image
+for our Bastion host 
+*/
+
+# ----- AWS AMI FILTER -----
+data "aws_ami" "latest_amazon_linux" {
+  most_recent = true
+
+  filter {
+    name = "virtualization-type"
+    values = ["hvm"]
+  }
+
+  filter {
+    name = "architecture"
+    values = ["x86_64"]
+  }
+
+  owners = ["amazon"]
+}
+
+
+# ----- Bastion Host Public Subnet -----
+module "bastion_host" {
+  source = "./modules/ec2_instance"
+  ami_id = data.aws_ami.latest_amazon_linux.id
+  instance_az = data.aws_availability_zones.available.names[0]
+  instance_name = "Bastion Host"
+  instance_type = "t2.small"
+  associate_public_ip = false
+  instance_subnet = aws_subnet.public[0].id      # The bastion host will be deployed on the first public subnet
+  instance_tenancy = "default"
+  
+}
