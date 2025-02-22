@@ -1,4 +1,4 @@
-resource "aws_instance" "bastion_host" {
+resource "aws_instance" "ec2_instance" {
   ami = var.ami_id
   instance_type = var.instance_type
   availability_zone = var.instance_az

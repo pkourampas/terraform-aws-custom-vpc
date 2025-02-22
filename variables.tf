@@ -33,3 +33,8 @@ variable "aws_vpc_cidr" {
 variable "number_of_private_subnets" {
   default = 1
 }
+
+variable "s3-bucket-name" {
+  default = "terraform-state"
+  description = "his is the name of the S3 bucket where the Terraform state file will be stored."
+}

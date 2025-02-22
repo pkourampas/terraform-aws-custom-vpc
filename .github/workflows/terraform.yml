@@ -47,6 +47,7 @@ jobs:
           aws-region: ${{ env.AWS_REGION_ID }}
 
       - name: Terraform Init
+        id: init
         run: terraform init
 
       - name: Terraform Format
@@ -56,11 +57,20 @@ jobs:
         run: terraform validate
 
       - name: Terraform Plan
+        id: plan
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         run: terraform plan -var 'region=${{ env.TF_region }}' -out=${{ env.PLAN_OUT }}
         env:
           TF_region: ${{ env.AWS_REGION_NAME }}
 
       - name: Terraform Apply
+        id: apply
         if: success()
         run: terraform apply -auto-approve ${{ env.PLAN_OUT }}
+
+      - name: Get Terraform S3 bucket name
+        run: echo "TF_S3_BUCKET_NAME=$(terraform output -raw s3-bucket-name)" >> $GITHUB_ENV  # Used to retrieve the value of Terraform output variable s3-bucket-name
+
+      - name: Store State file in S3 Bucket
+        if: steps.apply.outcome == 'success'
+        run: aws s3 cp terraform.tfstate s3://$TF_S3_BUCKET_NAME/terraform.tfstate

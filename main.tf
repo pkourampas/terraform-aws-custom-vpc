@@ -13,6 +13,12 @@ provider "aws" {
     region = local.selected_region
 }
 
+/* We will create an s3 bucket to store our terraform state file */
+module "s3_backend" {
+  source = "./modules/s3_bucket"
+  name = var.s3-bucket-name
+}
+
 # Create VPC with IPv4 CIDR block of 254 IPs (var.aws_vpc_cidr)
 resource "aws_vpc" "my_vpc" {
   cidr_block = var.aws_vpc_cidr
@@ -64,7 +70,7 @@ module "bastion_host" {
   instance_az = data.aws_availability_zones.available.names[0]
   instance_name = "Bastion Host"
   instance_type = "t2.small"
-  associate_public_ip = false
+  associate_public_ip = true
   instance_subnet = aws_subnet.public[0].id      # The bastion host will be deployed on the first public subnet
   instance_tenancy = "default"
   
