@@ -20,7 +20,11 @@ This repository serves as a Proof of Concept (POC) for creating a custom Virtual
 
 ## Amazon Policy
 
-For this workshop, we will use the **AmazonVPCFullAccess** policy to manage VPC resources while ensuring the role’s access within AWS is appropriately scoped and limited.
+For this workshop, we will use the following policies to manage VPC resources while ensuring the role’s access within AWS is appropriately scoped and limited.
+
+- **AmazonVPCFullAccess**
+- **AmazonEC2FullAccess**
+- **AmazonS3FullAccess**
 
 ## Generate an EIP Policy
 
