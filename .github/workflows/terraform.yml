@@ -18,7 +18,7 @@ env:
   PLAN_OUT: "tfplan"
 
 jobs:
-  Create_a_custom_VPC_on_AWS:
+  terraform_apply:
     permissions:
       id-token: write       # This is required for requesting the JWT (JSON web Token)
       contents: read        # This is required for actions/checkout
