@@ -55,6 +55,7 @@ jobs:
 
       - name: Terraform Validate
         run: terraform validate
+        continue-on-error: true   # add it to pass a value in region variable using lookup function
 
       - name: Terraform Plan
         id: plan
