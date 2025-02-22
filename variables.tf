@@ -35,6 +35,6 @@ variable "number_of_private_subnets" {
 }
 
 variable "s3-bucket-name" {
-  default = "my_custom_vpc_terraform-state"
+  default = "my-custom-vpc-terraform-state"
   description = "his is the name of the S3 bucket where the Terraform state file will be stored."
 }
