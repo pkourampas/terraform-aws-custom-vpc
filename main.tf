@@ -16,7 +16,7 @@ provider "aws" {
 /* We will create an s3 bucket to store our terraform state file */
 module "s3_backend" {
   source = "./modules/s3_bucket"
-  name = var.s3-bucket-name
+  name = var.s3-bucket-name.id
 }
 
 # Create VPC with IPv4 CIDR block of 254 IPs (var.aws_vpc_cidr)
