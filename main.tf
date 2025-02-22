@@ -17,7 +17,6 @@ provider "aws" {
 module "s3_backend" {
   source = "./modules/s3_bucket"
   name = var.s3-bucket-name
-  s3-bucket-region = "ca-central-1"
 }
 
 # Create VPC with IPv4 CIDR block of 254 IPs (var.aws_vpc_cidr)
