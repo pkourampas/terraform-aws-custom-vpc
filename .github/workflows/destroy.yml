@@ -1,0 +1,57 @@
+name: "Destroy the Infrastructure on AWS"
+run-name: ${{ github.actor }}
+
+# It triggers on push events
+on:
+  workflow_dispatch:
+
+env:
+  AWS_ROLE_ASSIGNMENT: ${{ secrets.AWS_ROLE_ASSIGNMENT }}
+  AWS_REGION_ID: ""
+  AWS_REGION_NAME: "Canada"
+  AWS_OWNER_ID: ${{ secrets.AWS_OWNER_ID }}
+  REGION_MAP: '{"Virginia":"us-east-1", "Ohio":"us-east-2", "California":"us-west-1", "Oregon":"us-west-2", "Mumbai":"ap-south-1", "Osaka":"ap-northeast-3", "Seoul":"ap-northeast-2", "Singapore":"ap-shoutheast-1", "Sydney":"ap-southeast-2", "Tokyo":"ap-northeast-1", "Canada":"ca-central-1", "Frankfurt":"eu-central-1", "Ireland":"eu-west-1", "London":"eu-west-2", "Paris":"eu-west-3", "Stockholm":"eu-north-1", "Sao Paulo":"sa-east-1"}'
+  PLAN_OUT: "tfplan"
+
+jobs:
+  destroy:
+    permissions:
+      id-token: write       # This is required for requesting the JWT (JSON web Token)
+      contents: read        # This is required for actions/checkout
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Get Region
+        run: |
+          AWS_REGION_ID=$(echo "$REGION_MAP" | jq -r --arg key "$AWS_REGION_NAME" '.[$key]')
+          echo "AWS_REGION_ID=$AWS_REGION_ID" >> $GITHUB_ENV
+
+      # Add your aws cli credentials as secrets into the repository
+      - name: Get AWS permissions
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          role-to-assume: arn:aws:iam::${{ env.AWS_OWNER_ID }}:role/${{ env.AWS_ROLE_ASSIGNMENT }}
+          aws-region: ${{ env.AWS_REGION_ID }}
+
+      - name: Checkout repo
+        uses: actions/checkout@v3
+  
+      # Installs the selected version of Terraform
+      - name: Install Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: '1.7.3'
+          terraform_wrapper: false
+  
+      - name: Terraform Init
+        id: init
+        run: terraform init
+
+      - name: Download Terraform State File from S3
+        id: download
+        run: |
+          aws s3 cp s3://my-custom-vpc-terraform-state/custom_vpc.tfstate terraform.tfstate
+
+      - name: Destroy AWS Infra
+        if: steps.download.outcome == 'success'
+        run: terraform destroy --auto-approve
