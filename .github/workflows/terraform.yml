@@ -45,6 +45,7 @@ jobs:
         uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: '1.7.3'
+          terraform_wrapper: false
 
       - name: Terraform Init
         id: init
@@ -73,19 +74,14 @@ jobs:
         if: steps.apply.outcome == 'success'
         id: extract
         run: |
-          BUCKET_NAME=$(terraform output -raw s3-bucket 2>/dev/null | tr -d '[:space:]')
-          if [[ -z "$BUCKET_NAME" ]]; then
-            echo "Error: s3 Bucket Name is empty!"
-            exit 1
-          fi
-          echo "TF_S3_BUCKET_NAME=${BUCKET_NAME}" >> $GITHUB_ENV
+          echo "BUCKET_NAME=$(terraform output -raw s3-bucket)" >> $GITHUB_ENV
 
       - name: Verify S3 Bucket Name
         if: steps.extract.outcome == 'success'
         id: verify
         run: |
-          echo "Using S3 Bucket: $TF_S3_BUCKET_NAME"
+          echo "Using S3 Bucket: $BUCKET_NAME"
 
       - name: Store State file in S3 Bucket
         if: steps.verify.outcome == 'success'
-        run: aws s3 cp terraform.tfstate s3://$TF_S3_BUCKET_NAME/custom_vpc.tfstate
+        run: aws s3 cp terraform.tfstate s3://$BUCKET_NAME/custom_vpc.tfstate
