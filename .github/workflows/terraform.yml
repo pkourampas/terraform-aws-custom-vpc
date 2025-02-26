@@ -70,7 +70,7 @@ jobs:
         run: terraform apply -auto-approve ${{ env.PLAN_OUT }}
 
       - name: Get Terraform S3 bucket name
-        run: echo "TF_S3_BUCKET_NAME=$(terraform output -raw s3-bucket-name)" >> $GITHUB_ENV  # Used to retrieve the value of Terraform output variable s3-bucket-name
+        run: echo "TF_S3_BUCKET_NAME=$(terraform output -json | jq -r '.["s3-bucket-name"].value')" >> $GITHUB_ENV  # Used to retrieve the value of Terraform output variable s3-bucket-name
 
       - name: Store State file in S3 Bucket
         if: steps.apply.outcome == 'success'
