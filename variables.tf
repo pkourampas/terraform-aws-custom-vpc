@@ -38,3 +38,8 @@ variable "s3-bucket-name" {
   default = "my-custom-vpc-terraform-state"
   description = "it is the name of the S3 bucket where the Terraform state file will be stored."
 }
+
+variable "my_public_ipv4" {
+  description = "Please provide your public ipv4 address"
+  type = string
+}
