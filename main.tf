@@ -73,7 +73,7 @@ module "bastion_host" {
   associate_public_ip = true
   instance_subnet = aws_subnet.public[0].id      # The bastion host will be deployed on the first public subnet
   instance_tenancy = "default"
-  vpc_sg_group_id = [module.ssh_security_group.id]
+  vpc_sg_group_id = [module.ssh_security_group]
 }
 
 /* Using Security Group Module to access our ec2 Insstances */
@@ -84,11 +84,11 @@ module "ssh_security_group" {
   sg_vpc_id = aws_vpc.my_vpc.id
   
   ingress_rules = [
-    { from_port = 80, to_port = 80, protocol = "tcp", cidr_blocks = var.my_public_ipv4 },
-    { from_port = 22, to_port = 22, protocol = "tcp", cidr_blocks = var.my_public_ipv4 }
+    { from_port = 80, to_port = 80, ip_protocol = "tcp", cidr_block = var.my_public_ipv4 },
+    { from_port = 22, to_port = 22, ip_protocol = "tcp", cidr_block = var.my_public_ipv4 }
   ]
 
   egress_rules = [
-    { from_port = 0, to_port = 0, protocol = "-1", cidr_blocks = var.my_public_ipv4 }
+    { from_port = 0, to_port = 0, ip_protocol = "-1", cidr_block = var.my_public_ipv4 }
   ]
 }
