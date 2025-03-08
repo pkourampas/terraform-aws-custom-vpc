@@ -5,4 +5,6 @@ variable "instance_type" {}
 variable "instance_name" {}
 variable "instance_subnet" {}
 variable "instance_tenancy" {}
-variable "vpc_sg_group_id" {}
+variable "vpc_sg_group_id" {
+  type = list(string)
+}
