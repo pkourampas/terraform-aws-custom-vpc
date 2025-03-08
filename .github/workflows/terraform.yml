@@ -61,7 +61,7 @@ jobs:
       - name: Terraform Plan
         id: plan
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-        run: terraform plan -var 'region=${{ env.TF_region }}' -var 'my_public_ipv4=216.131.115.216' -out=${{ env.PLAN_OUT }}
+        run: terraform plan -var 'region=${{ env.TF_region }}' -var 'my_public_ipv4=216.131.115.216/32' -out=${{ env.PLAN_OUT }}
         env:
           TF_region: ${{ env.AWS_REGION_NAME }}
 
