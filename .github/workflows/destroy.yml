@@ -54,4 +54,4 @@ jobs:
 
       - name: Destroy AWS Infra
         if: steps.download.outcome == 'success'
-        run: terraform destroy -var 'region=Canada' --auto-approve
+        run: terraform destroy -var 'region=Canada' -var 'my_public_ipv4=216.131.115.216/32' --auto-approve
