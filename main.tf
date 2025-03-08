@@ -73,7 +73,7 @@ module "bastion_host" {
   associate_public_ip = true
   instance_subnet = aws_subnet.public[0].id      # The bastion host will be deployed on the first public subnet
   instance_tenancy = "default"
-  vpc_sg_group_id = [module.ssh_security_group]
+  vpc_sg_group_id = [module.ssh_security_group.security_group_id] # Extract the actual ID of the Security Group
 }
 
 /* Using Security Group Module to access our ec2 Insstances */
